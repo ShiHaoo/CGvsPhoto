@@ -131,9 +131,9 @@ def gaussian_func(mu, x, n, sigma):
     :type n: int 
     :type sigma: float
   """ 
-  gauss = tf.contrib.distributions.Normal(mu=mu, sigma=sigma)
+  gauss = tf.contrib.distributions.Normal(loc=mu, scale=sigma)
   # return(tf.reduce_sum(gauss.pdf(xmax - tf.nn.relu(xmax - x))/n))
-  return(tf.reduce_sum(gauss.pdf(x)/n))
+  return(tf.reduce_sum(gauss.prob(x)/n))
 
 
 
@@ -252,7 +252,7 @@ class Model:
     self.nl = len(self.nf)
     self.filter_size = 3
 
-    self.feature_extractor = 'Stats'
+    self.feature_extractor = feature_extractor
 
     if self.feature_extractor != 'Stats' and self.feature_extractor != 'Hist':
       raise ValueError('''Feature extractor must be 'Stats' or 'Hist' ''')
@@ -778,7 +778,7 @@ class Model:
       # print("   test AUC %g"%test_auc)
       if nb_train_batch > validation_frequency:
         plt.figure()
-        plt.plot(np.linspace(0,nb_train_batch,int(nb_train_batch/10)), validation_accuracy)
+        plt.plot(np.linspace(0,nb_train_batch,int(nb_train_batch/validation_frequency)), validation_accuracy)
         plt.title("Validation accuracy during training")
         plt.xlabel("Training batch")
         plt.ylabel("Validation accuracy")
